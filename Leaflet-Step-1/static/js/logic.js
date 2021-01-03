@@ -4,30 +4,60 @@ var queryUrl = "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&
   "2020-07-02&maxlongitude=-69.52148437&minlongitude=-123.83789062&maxlatitude=48.74894534&minlatitude=25.16517337";
 
 d3.json(queryUrl, function(data) {
-  createFeatures(data.features);
-  console.log(data)
+//   createFeatures(data.features);
+  console.log(data);
+
+  L.geoJson(data,{
+      pointToLayer: function(feature, latlng){
+          return L.circleMarker(latlng);
+      },
+    //   style: styleInfo,
+      onEachFeature: function(feature, layer){
+          layer.bindPopup(
+              "Magnitude: "
+              + feature.properties.mag
+              + "<br>Depth: "
+              + feature.geometry.coordinates[2]
+              +"<br>Location "
+              +feature.properties.place
+          );
+      }
+  }).addTo(myMap)
 });
 
-function createFeatures(earthquakeData) {
+// function styleInfo(feature) {
+//     return {
+//       opacity: 1,
+//       fillOpacity: 1,
+//       fillColor: getColor(feature.geometry.coordinates[2]),
+//       color: "#000000",
+//       radius: getRadius(feature.properties.mag),
+//       stroke: true,
+//       weight: 0.5
+//     };
+//   };
 
-  function onEachFeature(feature, circle) {
-    var circle = L.circleMarker([51.508, -0.11], {
-        color: 'red',
-        fillColor: '#f03',
-        fillOpacity: 0.5,
-        radius: feature.properties.mag*3,
-    });
-    circle.bindPopup("<h3>" + feature.properties.place +
-      "</h3><hr><p>" + new Date(feature.properties.time) + "</p>");
 
-  };
-  var earthquakes = L.geoJSON(earthquakeData, {
-    onEachFeature: onEachFeature
-  });
+// function createFeatures(earthquakeData) {
+
+//   function onEachFeature(feature, circle) {
+//     var circle = L.circleMarker([feature.geometry.coordinates[0],feature.geometry.coordinates[1]],{
+//         color: 'red',
+//         fillColor: '#f03',
+//         fillOpacity: 0.5,
+//         radius: feature.properties.mag*3,
+//     });
+//     circle.bindPopup("<h3>" + feature.properties.place +
+//       "</h3><hr><p>" + new Date(feature.properties.time) + "</p>");
+
+//   };
+//   var earthquakes = L.geoJSON(earthquakeData, {
+//     onEachFeature: onEachFeature
+//   });
   
 
-  createMap(earthquakes);
-}
+//   createMap(earthquakes);
+// }
 
 function createMap(earthquakes) {
 
@@ -88,10 +118,10 @@ function createMap(earthquakes) {
     layers: [streetmap, earthquakes]
   });
 
-  // Create a layer control
-  // Pass in our baseMaps and overlayMaps
-  // Add the layer control to the map
-//   L.control.layers(baseMaps, overlayMaps, {
-//     collapsed: false
-//   }).addTo(myMap);
+//   Create a layer control
+//   Pass in our baseMaps and overlayMaps
+//   Add the layer control to the map
+  L.control.layers(baseMaps, overlayMaps, {
+    collapsed: false
+  }).addTo(myMap);
 }
