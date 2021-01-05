@@ -1,14 +1,14 @@
 /* remove default margin and padding from body */
 body {
-  padding: 0;
-  margin: 0;
+  padding: 20;
+  margin: 20;
 }
 
 /* set map, body, and html to 100% of the screen size */
 #map,
 body,
 html {
-  height: 100%;
+  height: 95%;
 }
 .legend {
   line-height: 18px;
